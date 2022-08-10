@@ -19,35 +19,7 @@ public class SmsAuthenticator implements Authenticator {
     @Override
     public void authenticate(AuthenticationFlowContext authenticationFlowContext) {
         try {
-            /* get authConfig, session and userModel */
 
-            AuthenticatorConfigModel authenticatorConfig = authenticationFlowContext.getAuthenticatorConfig();
-            KeycloakSession session = authenticationFlowContext.getSession();
-            UserModel user = authenticationFlowContext.getUser();
-
-            String phoneNumber = user.getFirstAttribute("phone_number");
-            int length = Integer.parseInt(authenticatorConfig.getConfig().get("length"));
-            int ttl = Integer.parseInt(authenticatorConfig.getConfig().get("ttl"));
-
-            /* generate code and format ttl and set authNotes */
-
-            String code = SecretGenerator.getInstance().randomString(length, SecretGenerator.DIGITS);
-            AuthenticationSessionModel authenticationSession = authenticationFlowContext.getAuthenticationSession();
-            authenticationSession.setAuthNote("code", code);
-            authenticationSession.setAuthNote("ttl", Long.toString(System.currentTimeMillis() + (ttl * 1000L)));
-
-            /* prepare window and SMS text */
-
-            Theme loginTheme = session.theme().getTheme(Theme.Type.LOGIN);
-            Locale locale = session.getContext().resolveLocale(user);
-
-            String smsAuthText = loginTheme.getMessages(locale).getProperty("smsAuthText");
-            String smsText = String.format(smsAuthText, code, Math.floorDiv(ttl, 60));
-
-            SmsServiceFactory.get(authenticatorConfig.getConfig()).send(phoneNumber, smsText);
-
-            authenticationFlowContext.challenge(authenticationFlowContext.form().setAttribute
-                    ("realm", authenticationFlowContext.getRealm()).createForm(TPL_CODE));
         } catch (Exception e) {
             authenticationFlowContext.failureChallenge(AuthenticationFlowError.INTERNAL_ERROR,
                     authenticationFlowContext.form().createErrorPage(Response.Status.INTERNAL_SERVER_ERROR));
