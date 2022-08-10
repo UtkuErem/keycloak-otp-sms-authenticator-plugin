@@ -14,7 +14,7 @@ To be able to use the 2fa-sms-authenticator after you deployed the JAR profile t
 - [@dasniko](https://github.com/dasniko) for design and development.
 
   
-## Kullanılan Teknolojiler
+## Used Technologies
 
 **Client:** Keycloak
 
