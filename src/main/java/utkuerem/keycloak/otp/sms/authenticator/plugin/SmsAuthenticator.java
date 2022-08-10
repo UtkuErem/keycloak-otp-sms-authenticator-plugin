@@ -19,7 +19,26 @@ public class SmsAuthenticator implements Authenticator {
     @Override
     public void authenticate(AuthenticationFlowContext authenticationFlowContext) {
         try {
+            AuthenticatorConfigModel authenticatorConfig = authenticationFlowContext.getAuthenticatorConfig();
+            KeycloakSession session = authenticationFlowContext.getSession();
+            UserModel user = authenticationFlowContext.getUser();
 
+            String phoneNumber = user.getFirstAttribute("phone_number");
+            int length = Integer.parseInt(authenticatorConfig.getConfig().get("length"));
+            long ttl = Integer.parseInt(authenticatorConfig.getConfig().get("ttl"));
+
+
+
+//            Theme loginTheme = session.theme().getTheme(Theme.Type.LOGIN);
+//            Locale locale = session.getContext().resolveLocale(user);
+//
+//            String smsAuthText = loginTheme.getMessages(locale).getProperty("smsAuthText");
+//            String smsText = String.format(smsAuthText, code, Math.floorDiv(ttl, 60));
+//
+//            SmsServiceFactory.get(authenticatorConfig.getConfig()).send(phoneNumber, smsText);
+//
+//            authenticationFlowContext.challenge(authenticationFlowContext.form().setAttribute
+//                    ("realm", authenticationFlowContext.getRealm()).createForm(TPL_CODE));
         } catch (Exception e) {
             authenticationFlowContext.failureChallenge(AuthenticationFlowError.INTERNAL_ERROR,
                     authenticationFlowContext.form().createErrorPage(Response.Status.INTERNAL_SERVER_ERROR));
