@@ -9,7 +9,7 @@ public class SmsServiceFactory {
     private static final Logger LOG = Logger.getLogger(SmsServiceFactory.class);
 
     public static SmsService get(Map<String, String> config) {
-        if (Boolean.parseBoolean(config.getOrDefault("DEMO", "false"))) {
+        if (Boolean.parseBoolean(config.getOrDefault("demo", "false"))) {
             return (phoneNumber, message) ->
                     LOG.warn(String.format("***** DEMO MODE ***** Would send SMS to %s with text: %s", phoneNumber, message));
         } else {
